@@ -10,11 +10,11 @@ export class TodoComponent {
   @Input() todo: Todo;
   @Input() disabled: boolean;
 
-  @Output() complete: EventEmitter<Todo> = new EventEmitter();
-  @Output() remove: EventEmitter<Todo> = new EventEmitter();
+  @Output() completeTodo: EventEmitter<Todo> = new EventEmitter();
+  @Output() removeTodo: EventEmitter<Todo> = new EventEmitter();
 
   onChange(completed: boolean): void {
     const { id, title } = this.todo;
-    this.complete.emit({ id, title, completed })
+    this.completeTodo.emit({ id, title, completed });
   }
 }

@@ -12,7 +12,7 @@ import { Todo, TodoList, TodoParams } from 'src/app/shared/types';
 })
 export class TodoListComponent implements OnInit {
   todoList: TodoList = [];
-  newTodo: string = '';
+  newTodo = '';
   params: Partial<TodoParams> = {};
   isDisabled$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   isLoading$: BehaviorSubject<boolean> = new BehaviorSubject(false);

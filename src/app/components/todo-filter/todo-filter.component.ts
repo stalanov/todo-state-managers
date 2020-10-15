@@ -18,6 +18,6 @@ export class TodoFilterComponent {
   completeFilter: typeof CompleteFilter = CompleteFilter;
 
   onChange(filter: CompleteFilter): void {
-    this.filterChange.emit(filterHash[filter])
+    this.filterChange.emit(filterHash[filter]);
   }
 }
