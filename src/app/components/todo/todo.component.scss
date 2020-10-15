@@ -1,0 +1,13 @@
+.todo {
+  display: block;
+
+  &__remove-button {
+    border: none;
+    color: red;
+    background: none;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

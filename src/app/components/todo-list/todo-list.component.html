@@ -1,0 +1,30 @@
+<div class="todo-list">
+  <ng-container *ngIf="!(isLoading$ | async); else spinner">
+    <h1>Todo List</h1>
+  </ng-container>
+  <app-todo-filter (filterChange)="onFilter($event)"></app-todo-filter>
+  <ul class="todo-list__list">
+    <li *ngFor="let todo of todoList">
+      <app-todo
+        [todo]="todo"
+        [disabled]="(isDisabled$ | async) || (isLoading$ | async)"
+        (complete)="onComplete($event)"
+        (remove)="onRemove($event)"
+      ></app-todo>
+    </li>
+  </ul>
+  <div class="todo-list__add">
+    <input type="text" [(ngModel)]="newTodo" (keydown.enter)="onAdd()" />
+    <button
+      type="button"
+      [disabled]="(isDisabled$ | async) || (isLoading$ | async)"
+      (click)="onAdd()"
+    >
+      Add Todo
+    </button>
+  </div>
+</div>
+
+<ng-template #spinner>
+  <app-spinner></app-spinner>
+</ng-template>

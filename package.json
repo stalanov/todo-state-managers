@@ -1,5 +1,5 @@
 {
-  "name": "todo-ngrx",
+  "name": "todo-state-managers",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
