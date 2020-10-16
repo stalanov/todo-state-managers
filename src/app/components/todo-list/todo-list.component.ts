@@ -12,9 +12,9 @@ import { Todo, TodoList, TodoParams } from 'src/app/shared/types';
 })
 export class TodoListComponent implements OnInit {
   todoList: TodoList = [];
-  newTodo = '';
-  params: Partial<TodoParams> = {};
-  isDisabled$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  newTodoInput = '';
+  queryParams: Partial<TodoParams> = {};
+  isSaving$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   isLoading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(private todoService: TodoService) {}
@@ -24,12 +24,12 @@ export class TodoListComponent implements OnInit {
   }
 
   onComplete(todo: Todo): void {
-    this.isDisabled$.next(true);
+    this.isSaving$.next(true);
     this.todoService
       .updateTodo(todo)
       .pipe(
         finalize(() => {
-          this.isDisabled$.next(false);
+          this.isSaving$.next(false);
           this.fetchTodos();
         })
       )
@@ -38,30 +38,30 @@ export class TodoListComponent implements OnInit {
 
   onAdd(): void {
     const todo: Todo = {
-      title: this.newTodo,
+      title: this.newTodoInput,
       completed: false,
     };
-    this.isDisabled$.next(true);
+    this.isSaving$.next(true);
     this.todoService
       .addTodo(todo)
       .pipe(
         finalize(() => {
-          this.isDisabled$.next(false);
-          this.newTodo = '';
+          this.isSaving$.next(false);
+          this.newTodoInput = '';
           this.fetchTodos();
         })
       )
       .subscribe();
-    this.newTodo = '';
+    this.newTodoInput = '';
   }
 
   onRemove(todo: Todo): void {
-    this.isDisabled$.next(true);
+    this.isSaving$.next(true);
     this.todoService
       .removeTodo(todo)
       .pipe(
         finalize(() => {
-          this.isDisabled$.next(false);
+          this.isSaving$.next(false);
           this.fetchTodos();
         })
       )
@@ -69,14 +69,14 @@ export class TodoListComponent implements OnInit {
   }
 
   onFilter(params: Partial<TodoParams>): void {
-    this.params = params;
+    this.queryParams = params;
     this.fetchTodos();
   }
 
   private fetchTodos(): void {
     this.isLoading$.next(true);
     this.todoService
-      .getTodoList(this.params)
+      .getTodoList(this.queryParams)
       .pipe(finalize(() => this.isLoading$.next(false)))
       .subscribe((list) => (this.todoList = list));
   }

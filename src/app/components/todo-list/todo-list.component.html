@@ -7,17 +7,17 @@
     <li *ngFor="let todo of todoList">
       <app-todo
         [todo]="todo"
-        [disabled]="(isDisabled$ | async) || (isLoading$ | async)"
+        [disabled]="(isSaving$ | async) || (isLoading$ | async)"
         (completeTodo)="onComplete($event)"
         (removeTodo)="onRemove($event)"
       ></app-todo>
     </li>
   </ul>
   <div class="todo-list__add">
-    <input type="text" [(ngModel)]="newTodo" (keydown.enter)="onAdd()" />
+    <input type="text" [(ngModel)]="newTodoInput" (keydown.enter)="onAdd()" />
     <button
       type="button"
-      [disabled]="(isDisabled$ | async) || (isLoading$ | async)"
+      [disabled]="(isSaving$ | async) || (isLoading$ | async)"
       (click)="onAdd()"
     >
       Add Todo
