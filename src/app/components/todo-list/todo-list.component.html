@@ -15,13 +15,7 @@
   </ul>
   <div class="todo-list__add">
     <input type="text" [(ngModel)]="newTodoInput" (keydown.enter)="onAdd()" />
-    <button
-      type="button"
-      [disabled]="(isSaving$ | async) || (isLoading$ | async)"
-      (click)="onAdd()"
-    >
-      Add Todo
-    </button>
+    <button type="button" [disabled]="(isSaving$ | async) || (isLoading$ | async)" (click)="onAdd()">Add Todo</button>
   </div>
 </div>
 

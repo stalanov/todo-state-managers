@@ -1,8 +1,6 @@
 # TodoStateManagers
 
-Small Todo list application that implements different state managers libraries for angular.
-It works with [Fast JSON API](https://github.com/stalanov/fast-json-api) server.
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.6.
+Small Todo list application that implements different state managers libraries for angular. It works with [Fast JSON API](https://github.com/stalanov/fast-json-api) server. This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.6.
 
 ## Development server
 

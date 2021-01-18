@@ -4,7 +4,7 @@ import { Todo } from 'src/app/shared/types';
 @Component({
   selector: 'app-todo',
   templateUrl: './todo.component.html',
-  styleUrls: ['./todo.component.scss'],
+  styleUrls: ['./todo.component.scss']
 })
 export class TodoComponent {
   @Input() todo: Todo;

@@ -8,7 +8,7 @@ import { Todo, TodoList, TodoParams } from 'src/app/shared/types';
 @Component({
   selector: 'app-todo-list',
   templateUrl: './todo-list.component.html',
-  styleUrls: ['./todo-list.component.scss'],
+  styleUrls: ['./todo-list.component.scss']
 })
 export class TodoListComponent implements OnInit {
   todoList: TodoList = [];
@@ -39,7 +39,7 @@ export class TodoListComponent implements OnInit {
   onAdd(): void {
     const todo: Todo = {
       title: this.newTodoInput,
-      completed: false,
+      completed: false
     };
     this.isSaving$.next(true);
     this.todoService
@@ -78,6 +78,6 @@ export class TodoListComponent implements OnInit {
     this.todoService
       .getTodoList(this.queryParams)
       .pipe(finalize(() => this.isLoading$.next(false)))
-      .subscribe((list) => (this.todoList = list));
+      .subscribe(list => (this.todoList = list));
   }
 }

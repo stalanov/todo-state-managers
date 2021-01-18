@@ -11,9 +11,7 @@ export class TodoService {
 
   getTodoList(todoParams: Partial<TodoParams> = {}): Observable<TodoList> {
     const params: Partial<TodoQueryParams> = {};
-    Object.entries(todoParams).forEach(
-      ([key, value]) => (params[key] = value.toString())
-    );
+    Object.entries(todoParams).forEach(([key, value]) => (params[key] = value.toString()));
     return this.http.get<TodoList>(this.getUrl(), { params });
   }
 
