@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
-import { TodoService } from 'src/app/services/todo.service';
 import { Todo, TodoList, TodoParams } from 'src/app/shared/types';
+import { TodoService, TodoQuery } from 'src/app/state';
 
 @Component({
   selector: 'app-todo-list',
@@ -11,28 +11,22 @@ import { Todo, TodoList, TodoParams } from 'src/app/shared/types';
   styleUrls: ['./todo-list.component.scss']
 })
 export class TodoListComponent implements OnInit {
-  todoList: TodoList = [];
+  todoList$: Observable<TodoList> = this.todoQuery.todoList;
   newTodoInput = '';
   queryParams: Partial<TodoParams> = {};
-  isSaving$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  isLoading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  isSaving$: Observable<boolean> = this.todoQuery.selectSaving();
+  isLoading$: Observable<boolean> = this.todoQuery.selectLoading();
 
-  constructor(private todoService: TodoService) {}
+  constructor(private todoService: TodoService, private todoQuery: TodoQuery) {}
 
   ngOnInit(): void {
     this.fetchTodos();
   }
 
   onComplete(todo: Todo): void {
-    this.isSaving$.next(true);
     this.todoService
       .updateTodo(todo)
-      .pipe(
-        finalize(() => {
-          this.isSaving$.next(false);
-          this.fetchTodos();
-        })
-      )
+      .pipe(finalize(() => this.fetchTodos()))
       .subscribe();
   }
 
@@ -41,12 +35,10 @@ export class TodoListComponent implements OnInit {
       title: this.newTodoInput,
       completed: false
     };
-    this.isSaving$.next(true);
     this.todoService
       .addTodo(todo)
       .pipe(
         finalize(() => {
-          this.isSaving$.next(false);
           this.newTodoInput = '';
           this.fetchTodos();
         })
@@ -56,12 +48,10 @@ export class TodoListComponent implements OnInit {
   }
 
   onRemove(todo: Todo): void {
-    this.isSaving$.next(true);
     this.todoService
       .removeTodo(todo)
       .pipe(
         finalize(() => {
-          this.isSaving$.next(false);
           this.fetchTodos();
         })
       )
@@ -74,10 +64,6 @@ export class TodoListComponent implements OnInit {
   }
 
   private fetchTodos(): void {
-    this.isLoading$.next(true);
-    this.todoService
-      .getTodoList(this.queryParams)
-      .pipe(finalize(() => this.isLoading$.next(false)))
-      .subscribe(list => (this.todoList = list));
+    this.todoService.getTodoList(this.queryParams).subscribe();
   }
 }

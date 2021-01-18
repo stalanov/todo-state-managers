@@ -8,7 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { TodoComponent } from './components/todo/todo.component';
 import { TodoListComponent } from './components/todo-list/todo-list.component';
-import { TodoService } from './services/todo.service';
+import { TodoQuery, TodoService, TodoStore } from './state';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { TodoFilterComponent } from './components/todo-filter/todo-filter.component';
 import { environment } from 'src/environments/environment';
@@ -22,7 +22,7 @@ import { environment } from 'src/environments/environment';
     FormsModule,
     environment.production ? [] : AkitaNgDevtools.forRoot()
   ],
-  providers: [TodoService],
+  providers: [TodoService, TodoStore, TodoQuery],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
