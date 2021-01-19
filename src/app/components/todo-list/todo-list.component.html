@@ -4,12 +4,12 @@
   </ng-container>
   <app-todo-filter (filterChange)="onFilter($event)"></app-todo-filter>
   <ul class="todo-list__list">
-    <li *ngFor="let todo of todoList">
+    <li *ngFor="let todo of todoList; index as i">
       <app-todo
         [todo]="todo"
         [disabled]="(isSaving$ | async) || (isLoading$ | async)"
-        (completeTodo)="onComplete($event)"
-        (removeTodo)="onRemove($event)"
+        (completeTodo)="onComplete($event, i)"
+        (removeTodo)="onRemove($event, i)"
       ></app-todo>
     </li>
   </ul>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
 import { TodoService } from 'src/app/services/todo.service';
@@ -23,17 +23,8 @@ export class TodoListComponent implements OnInit {
     this.fetchTodos();
   }
 
-  onComplete(todo: Todo): void {
-    this.isSaving$.next(true);
-    this.todoService
-      .updateTodo(todo)
-      .pipe(
-        finalize(() => {
-          this.isSaving$.next(false);
-          this.fetchTodos();
-        })
-      )
-      .subscribe();
+  onComplete(todo: Todo, index: number): void {
+    this.wrapSaving(this.todoService.updateTodo(todo)).subscribe(updatedTodo => (this.todoList[index] = updatedTodo));
   }
 
   onAdd(): void {
@@ -41,31 +32,12 @@ export class TodoListComponent implements OnInit {
       title: this.newTodoInput,
       completed: false
     };
-    this.isSaving$.next(true);
-    this.todoService
-      .addTodo(todo)
-      .pipe(
-        finalize(() => {
-          this.isSaving$.next(false);
-          this.newTodoInput = '';
-          this.fetchTodos();
-        })
-      )
-      .subscribe();
+    this.wrapSaving(this.todoService.addTodo(todo)).subscribe(newTodo => (this.todoList = [...this.todoList, newTodo]));
     this.newTodoInput = '';
   }
 
-  onRemove(todo: Todo): void {
-    this.isSaving$.next(true);
-    this.todoService
-      .removeTodo(todo)
-      .pipe(
-        finalize(() => {
-          this.isSaving$.next(false);
-          this.fetchTodos();
-        })
-      )
-      .subscribe();
+  onRemove(todo: Todo, index: number): void {
+    this.wrapSaving(this.todoService.removeTodo(todo)).subscribe(() => this.todoList.splice(index, 1));
   }
 
   onFilter(params: Partial<TodoParams>): void {
@@ -79,5 +51,10 @@ export class TodoListComponent implements OnInit {
       .getTodoList(this.queryParams)
       .pipe(finalize(() => this.isLoading$.next(false)))
       .subscribe(list => (this.todoList = list));
+  }
+
+  private wrapSaving<T>(request: Observable<T>): Observable<T> {
+    this.isSaving$.next(true);
+    return request.pipe(finalize(() => this.isSaving$.next(false)));
   }
 }
