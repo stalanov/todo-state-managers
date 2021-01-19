@@ -26,17 +26,19 @@ export class TodoService {
   }
 
   addTodo(todo: Todo): Observable<Todo> {
-    const request = this.http.post<Todo>(this.getUrl(), todo);
+    const request = this.http.post<Todo>(this.getUrl(), todo).pipe(tap(newTodo => this.todoStore.add(newTodo)));
     return this.stateWrap(request, this.setSaving);
   }
 
   removeTodo(todo: Todo): Observable<{}> {
-    const request = this.http.delete(this.getUrl(todo.id));
+    const request = this.http.delete(this.getUrl(todo.id)).pipe(tap(() => this.todoStore.remove(todo.id)));
     return this.stateWrap(request, this.setSaving);
   }
 
   updateTodo(todo: Todo): Observable<Todo> {
-    const request = this.http.put<Todo>(this.getUrl(todo.id), todo);
+    const request = this.http
+      .put<Todo>(this.getUrl(todo.id), todo)
+      .pipe(tap(updatedTodo => this.todoStore.update(updatedTodo.id, updatedTodo)));
     return this.stateWrap(request, this.setSaving);
   }
 

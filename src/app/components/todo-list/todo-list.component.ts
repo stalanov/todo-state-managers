@@ -24,10 +24,7 @@ export class TodoListComponent implements OnInit {
   }
 
   onComplete(todo: Todo): void {
-    this.todoService
-      .updateTodo(todo)
-      .pipe(finalize(() => this.fetchTodos()))
-      .subscribe();
+    this.todoService.updateTodo(todo).subscribe();
   }
 
   onAdd(): void {
@@ -35,27 +32,12 @@ export class TodoListComponent implements OnInit {
       title: this.newTodoInput,
       completed: false
     };
-    this.todoService
-      .addTodo(todo)
-      .pipe(
-        finalize(() => {
-          this.newTodoInput = '';
-          this.fetchTodos();
-        })
-      )
-      .subscribe();
+    this.todoService.addTodo(todo).subscribe();
     this.newTodoInput = '';
   }
 
   onRemove(todo: Todo): void {
-    this.todoService
-      .removeTodo(todo)
-      .pipe(
-        finalize(() => {
-          this.fetchTodos();
-        })
-      )
-      .subscribe();
+    this.todoService.removeTodo(todo).subscribe();
   }
 
   onFilter(params: Partial<TodoParams>): void {
