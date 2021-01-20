@@ -108,5 +108,8 @@
       }
     }
   },
-  "defaultProject": "todo-state-managers"
+  "defaultProject": "todo-state-managers",
+  "cli": {
+    "defaultCollection": "@ngrx/schematics"
+  }
 }
