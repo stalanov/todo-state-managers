@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 
-import { TodoService } from 'src/app/services/todo.service';
+import { AppState } from 'src/app/reducers';
+import { addTodo, loadTodoList, removeTodo, updateTodo } from 'src/app/actions/todo.actions';
+import { todoList, todoLoading, todoSaving } from 'src/app/selectors/todo.selectors';
 import { Todo, TodoList, TodoParams } from 'src/app/shared/types';
 
 @Component({
@@ -11,20 +13,20 @@ import { Todo, TodoList, TodoParams } from 'src/app/shared/types';
   styleUrls: ['./todo-list.component.scss']
 })
 export class TodoListComponent implements OnInit {
-  todoList: TodoList = [];
+  todoList$: Observable<TodoList> = this.store.pipe(select(todoList));
   newTodoInput = '';
   queryParams: Partial<TodoParams> = {};
-  isSaving$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  isLoading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  isSaving$: Observable<boolean> = this.store.pipe(select(todoLoading));
+  isLoading$: Observable<boolean> = this.store.pipe(select(todoSaving));
 
-  constructor(private todoService: TodoService) {}
+  constructor(private store: Store<AppState>) {}
 
   ngOnInit(): void {
-    this.fetchTodos();
+    this.fetchTodoList();
   }
 
-  onComplete(todo: Todo, index: number): void {
-    this.wrapSaving(this.todoService.updateTodo(todo)).subscribe(updatedTodo => (this.todoList[index] = updatedTodo));
+  onComplete(todo: Todo): void {
+    this.store.dispatch(updateTodo({ todo }));
   }
 
   onAdd(): void {
@@ -32,29 +34,24 @@ export class TodoListComponent implements OnInit {
       title: this.newTodoInput,
       completed: false
     };
-    this.wrapSaving(this.todoService.addTodo(todo)).subscribe(newTodo => (this.todoList = [...this.todoList, newTodo]));
+    this.store.dispatch(addTodo({ todo }));
     this.newTodoInput = '';
   }
 
-  onRemove(todo: Todo, index: number): void {
-    this.wrapSaving(this.todoService.removeTodo(todo)).subscribe(() => this.todoList.splice(index, 1));
+  onRemove(todo: Todo): void {
+    this.store.dispatch(removeTodo({ todo }));
   }
 
   onFilter(params: Partial<TodoParams>): void {
     this.queryParams = params;
-    this.fetchTodos();
+    this.fetchTodoList();
   }
 
-  private fetchTodos(): void {
-    this.isLoading$.next(true);
-    this.todoService
-      .getTodoList(this.queryParams)
-      .pipe(finalize(() => this.isLoading$.next(false)))
-      .subscribe(list => (this.todoList = list));
+  trackByFn(_: number, item: Todo): number {
+    return item.id;
   }
 
-  private wrapSaving<T>(request: Observable<T>): Observable<T> {
-    this.isSaving$.next(true);
-    return request.pipe(finalize(() => this.isSaving$.next(false)));
+  private fetchTodoList(): void {
+    this.store.dispatch(loadTodoList({ params: this.queryParams }));
   }
 }
