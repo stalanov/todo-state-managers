@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 import { Todo, TodoList, TodoParams } from 'src/app/shared/types';
 import { TodoService, TodoQuery } from 'src/app/state';
@@ -13,14 +12,13 @@ import { TodoService, TodoQuery } from 'src/app/state';
 export class TodoListComponent implements OnInit {
   todoList$: Observable<TodoList> = this.todoQuery.todoList;
   newTodoInput = '';
-  queryParams: Partial<TodoParams> = {};
   isSaving$: Observable<boolean> = this.todoQuery.selectSaving();
   isLoading$: Observable<boolean> = this.todoQuery.selectLoading();
 
   constructor(private todoService: TodoService, private todoQuery: TodoQuery) {}
 
   ngOnInit(): void {
-    this.fetchTodos();
+    this.fetchTodoList({});
   }
 
   onComplete(todo: Todo): void {
@@ -41,11 +39,14 @@ export class TodoListComponent implements OnInit {
   }
 
   onFilter(params: Partial<TodoParams>): void {
-    this.queryParams = params;
-    this.fetchTodos();
+    this.fetchTodoList(params);
   }
 
-  private fetchTodos(): void {
-    this.todoService.getTodoList(this.queryParams).subscribe();
+  trackByFn(_: number, item: Todo): number {
+    return item.id;
+  }
+
+  private fetchTodoList(params: Partial<TodoParams>): void {
+    this.todoService.getTodoList(params).subscribe();
   }
 }
