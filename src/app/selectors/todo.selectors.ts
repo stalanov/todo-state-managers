@@ -4,8 +4,8 @@ import { AppState } from '../reducers';
 
 const todoSelector = (state: AppState) => state.todo;
 
-export const todoList = createSelector(todoSelector, state => state.todoList);
+export const list = createSelector(todoSelector, state => state.todoList);
 
-export const todoLoading = createSelector(todoSelector, state => state.loading);
+export const loading = createSelector(todoSelector, state => state.loading);
 
-export const todoSaving = createSelector(todoSelector, state => state.saving);
+export const saving = createSelector(todoSelector, state => state.saving);

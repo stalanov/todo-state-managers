@@ -2,50 +2,43 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { map, switchMap } from 'rxjs/operators';
 
-import {
-  addTodo,
-  addTodoSuccess,
-  loadTodoList,
-  loadTodoListSuccess,
-  removeTodo,
-  removeTodoSuccess,
-  updateTodo,
-  updateTodoSuccess
-} from '../actions/todo.actions';
+import * as TodoActions from '../actions/todo.actions';
 import { TodoService } from '../services/todo.service';
 
 @Injectable()
 export class TodoEffects {
   loadTodoList = createEffect(() =>
     this.actions$.pipe(
-      ofType(loadTodoList),
+      ofType(TodoActions.load),
       switchMap(({ params }) =>
-        this.todoService.getTodoList(params).pipe(map(todoList => loadTodoListSuccess({ todoList })))
+        this.todoService.getTodoList(params).pipe(map(todoList => TodoActions.loadSuccess({ todoList })))
       )
     )
   );
 
   addTodo = createEffect(() =>
     this.actions$.pipe(
-      ofType(addTodo),
+      ofType(TodoActions.add),
       switchMap(({ todo }) =>
-        this.todoService.addTodo(todo).pipe(map(addedTodo => addTodoSuccess({ todo: addedTodo })))
+        this.todoService.addTodo(todo).pipe(map(addedTodo => TodoActions.addSuccess({ todo: addedTodo })))
       )
     )
   );
 
   removeTodo = createEffect(() =>
     this.actions$.pipe(
-      ofType(removeTodo),
-      switchMap(({ todo }) => this.todoService.removeTodo(todo).pipe(map(() => removeTodoSuccess({ id: todo.id }))))
+      ofType(TodoActions.remove),
+      switchMap(({ todo }) =>
+        this.todoService.removeTodo(todo).pipe(map(() => TodoActions.removeSuccess({ id: todo.id })))
+      )
     )
   );
 
   updateTodo = createEffect(() =>
     this.actions$.pipe(
-      ofType(updateTodo),
+      ofType(TodoActions.update),
       switchMap(({ todo }) =>
-        this.todoService.updateTodo(todo).pipe(map(updatedTodo => updateTodoSuccess({ todo: updatedTodo })))
+        this.todoService.updateTodo(todo).pipe(map(updatedTodo => TodoActions.updateSuccess({ todo: updatedTodo })))
       )
     )
   );

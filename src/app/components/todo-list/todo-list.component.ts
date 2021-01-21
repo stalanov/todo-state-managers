@@ -3,8 +3,8 @@ import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
 import { AppState } from 'src/app/reducers';
-import { addTodo, loadTodoList, removeTodo, updateTodo } from 'src/app/actions/todo.actions';
-import { todoList, todoLoading, todoSaving } from 'src/app/selectors/todo.selectors';
+import * as TodoActions from 'src/app/actions/todo.actions';
+import * as TodoSelectors from 'src/app/selectors/todo.selectors';
 import { Todo, TodoList, TodoParams } from 'src/app/shared/types';
 
 @Component({
@@ -13,20 +13,19 @@ import { Todo, TodoList, TodoParams } from 'src/app/shared/types';
   styleUrls: ['./todo-list.component.scss']
 })
 export class TodoListComponent implements OnInit {
-  todoList$: Observable<TodoList> = this.store.pipe(select(todoList));
+  todoList$: Observable<TodoList> = this.store.pipe(select(TodoSelectors.list));
   newTodoInput = '';
-  queryParams: Partial<TodoParams> = {};
-  isSaving$: Observable<boolean> = this.store.pipe(select(todoLoading));
-  isLoading$: Observable<boolean> = this.store.pipe(select(todoSaving));
+  isSaving$: Observable<boolean> = this.store.pipe(select(TodoSelectors.saving));
+  isLoading$: Observable<boolean> = this.store.pipe(select(TodoSelectors.loading));
 
   constructor(private store: Store<AppState>) {}
 
   ngOnInit(): void {
-    this.fetchTodoList();
+    this.fetchTodoList({});
   }
 
   onComplete(todo: Todo): void {
-    this.store.dispatch(updateTodo({ todo }));
+    this.store.dispatch(TodoActions.update({ todo }));
   }
 
   onAdd(): void {
@@ -34,24 +33,23 @@ export class TodoListComponent implements OnInit {
       title: this.newTodoInput,
       completed: false
     };
-    this.store.dispatch(addTodo({ todo }));
+    this.store.dispatch(TodoActions.add({ todo }));
     this.newTodoInput = '';
   }
 
   onRemove(todo: Todo): void {
-    this.store.dispatch(removeTodo({ todo }));
+    this.store.dispatch(TodoActions.remove({ todo }));
   }
 
   onFilter(params: Partial<TodoParams>): void {
-    this.queryParams = params;
-    this.fetchTodoList();
+    this.fetchTodoList(params);
   }
 
   trackByFn(_: number, item: Todo): number {
     return item.id;
   }
 
-  private fetchTodoList(): void {
-    this.store.dispatch(loadTodoList({ params: this.queryParams }));
+  private fetchTodoList(params: Partial<TodoParams>): void {
+    this.store.dispatch(TodoActions.load({ params }));
   }
 }
