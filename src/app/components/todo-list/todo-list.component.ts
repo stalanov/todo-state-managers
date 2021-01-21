@@ -13,18 +13,23 @@ import { Todo, TodoList, TodoParams } from 'src/app/shared/types';
 export class TodoListComponent implements OnInit {
   todoList: TodoList = [];
   newTodoInput = '';
-  queryParams: Partial<TodoParams> = {};
   isSaving$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   isLoading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(private todoService: TodoService) {}
 
   ngOnInit(): void {
-    this.fetchTodos();
+    this.fetchTodoList({});
   }
 
-  onComplete(todo: Todo, index: number): void {
-    this.wrapSaving(this.todoService.updateTodo(todo)).subscribe(updatedTodo => (this.todoList[index] = updatedTodo));
+  onComplete(todo: Todo): void {
+    this.wrapSaving(this.todoService.updateTodo(todo)).subscribe(
+      updatedTodo =>
+        (this.todoList = this.todoList.reduce((list, item) => {
+          item.id === updatedTodo.id ? list.push(updatedTodo) : list.push(item);
+          return list;
+        }, [] as TodoList))
+    );
   }
 
   onAdd(): void {
@@ -36,19 +41,24 @@ export class TodoListComponent implements OnInit {
     this.newTodoInput = '';
   }
 
-  onRemove(todo: Todo, index: number): void {
-    this.wrapSaving(this.todoService.removeTodo(todo)).subscribe(() => this.todoList.splice(index, 1));
+  onRemove(todo: Todo): void {
+    this.wrapSaving(this.todoService.removeTodo(todo)).subscribe(
+      () => (this.todoList = this.todoList.filter(item => item.id !== todo.id))
+    );
   }
 
   onFilter(params: Partial<TodoParams>): void {
-    this.queryParams = params;
-    this.fetchTodos();
+    this.fetchTodoList(params);
   }
 
-  private fetchTodos(): void {
+  trackByFn(_: number, item: Todo): number {
+    return item.id;
+  }
+
+  private fetchTodoList(params: Partial<TodoParams>): void {
     this.isLoading$.next(true);
     this.todoService
-      .getTodoList(this.queryParams)
+      .getTodoList(params)
       .pipe(finalize(() => this.isLoading$.next(false)))
       .subscribe(list => (this.todoList = list));
   }
