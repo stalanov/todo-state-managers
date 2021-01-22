@@ -1,27 +1,20 @@
 # TodoStateManagers
 
-Small Todo list application that implements different state managers libraries for angular. It works with [Fast JSON API](https://github.com/stalanov/fast-json-api) server. This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.6.
+Small Todo list application created using different state managers libraries for angular. See repo branches:
 
-## Development server
+1. master - pure angular service
+2. akita-implementation - [Akita](https://github.com/datorama/akita)
+3. ngrx-implementation - [NGRX](https://github.com/ngrx/platform)
+4. ngxs-implementation - [NGXS](https://github.com/ngxs/store)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Requirements
 
-## Code scaffolding
+1. Linux / Windows / MacOS
+2. NodeJs ([nvm](https://github.com/creationix/nvm))
+3. Launched [Fast JSON API server](https://github.com/stalanov/fast-json-api) with todo database
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Getting started
 
-## Build
+Run `npm i` in project's root for dependencies installation
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+Run `npm start` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
