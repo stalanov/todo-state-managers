@@ -4,7 +4,7 @@
   </ng-container>
   <app-todo-filter (filterChange)="onFilter($event)"></app-todo-filter>
   <ul class="todo-list__list">
-    <li *ngFor="let todo of todoList; trackBy: trackByFn">
+    <li *ngFor="let todo of todoList$ | async; trackBy: trackByFn">
       <app-todo
         [todo]="todo"
         [disabled]="(isSaving$ | async) || (isLoading$ | async)"
