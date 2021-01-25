@@ -3,6 +3,8 @@ import { createReducer, on } from '@ngrx/store';
 import * as TodoActions from '../actions/todo.actions';
 import { TodoList } from '../shared/types';
 
+export const todoKey = 'todo';
+
 export interface TodoState {
   todoList: TodoList;
   loading: boolean;

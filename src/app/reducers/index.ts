@@ -1,14 +1,14 @@
 import { ActionReducerMap, MetaReducer } from '@ngrx/store';
 
 import { environment } from '../../environments/environment';
-import { TodoState, todoReducer } from './todo.reducers';
+import { TodoState, todoReducer, todoKey } from './todo.reducers';
 
 export interface AppState {
-  todo: TodoState;
+  [todoKey]: TodoState;
 }
 
 export const reducers: ActionReducerMap<AppState> = {
-  todo: todoReducer
+  [todoKey]: todoReducer
 };
 
 export const metaReducers: MetaReducer<AppState>[] = !environment.production ? [] : [];
