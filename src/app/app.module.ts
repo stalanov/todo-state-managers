@@ -4,7 +4,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -14,8 +13,8 @@ import { TodoService } from './services/todo.service';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { TodoFilterComponent } from './components/todo-filter/todo-filter.component';
 import { reducers, metaReducers } from './reducers';
-import { environment } from '../environments/environment';
 import { TodoEffects } from './effects/todo.effects';
+import { extModules } from './build-specifics';
 
 @NgModule({
   declarations: [AppComponent, TodoComponent, TodoListComponent, SpinnerComponent, TodoFilterComponent],
@@ -26,7 +25,7 @@ import { TodoEffects } from './effects/todo.effects';
     FormsModule,
     StoreModule.forRoot(reducers, { metaReducers }),
     EffectsModule.forRoot([TodoEffects]),
-    !environment.production ? StoreDevtoolsModule.instrument() : []
+    extModules
   ],
   providers: [TodoService],
   bootstrap: [AppComponent]
