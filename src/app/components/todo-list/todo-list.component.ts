@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Select, Store } from '@ngxs/store';
+import { Observable } from 'rxjs';
 
-import { TodoService } from 'src/app/services/todo.service';
 import { Todo, TodoList, TodoParams } from 'src/app/shared/types';
+import { TodoState } from 'src/app/state/todo.state';
+import * as TodoActions from '../../state/todo.actions';
 
 @Component({
   selector: 'app-todo-list',
@@ -10,19 +12,19 @@ import { Todo, TodoList, TodoParams } from 'src/app/shared/types';
   styleUrls: ['./todo-list.component.scss']
 })
 export class TodoListComponent implements OnInit {
-  todoList$: Observable<TodoList> = this.todoService.todoList$;
-  isSaving$: BehaviorSubject<boolean> = this.todoService.isSaving$;
-  isLoading$: BehaviorSubject<boolean> = this.todoService.isLoading$;
+  @Select(TodoState.todoList) todoList$: Observable<TodoList>;
+  @Select(TodoState.saving) isSaving$: Observable<boolean>;
+  @Select(TodoState.loading) isLoading$: Observable<boolean>;
   newTodoInput = '';
 
-  constructor(private todoService: TodoService) {}
+  constructor(private store: Store) {}
 
   ngOnInit(): void {
     this.fetchTodoList({});
   }
 
   onComplete(todo: Todo): void {
-    this.todoService.updateTodo(todo).subscribe();
+    this.store.dispatch(new TodoActions.Update(todo));
   }
 
   onAdd(): void {
@@ -30,12 +32,12 @@ export class TodoListComponent implements OnInit {
       title: this.newTodoInput,
       completed: false
     };
-    this.todoService.addTodo(todo).subscribe();
+    this.store.dispatch(new TodoActions.Add(todo));
     this.newTodoInput = '';
   }
 
   onRemove(todo: Todo): void {
-    this.todoService.removeTodo(todo).subscribe();
+    this.store.dispatch(new TodoActions.Remove(todo));
   }
 
   onFilter(params: Partial<TodoParams>): void {
@@ -47,6 +49,6 @@ export class TodoListComponent implements OnInit {
   }
 
   private fetchTodoList(params: Partial<TodoParams>): void {
-    this.todoService.getTodoList(params).subscribe();
+    this.store.dispatch(new TodoActions.Load(params));
   }
 }

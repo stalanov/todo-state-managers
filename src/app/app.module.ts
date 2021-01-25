@@ -13,6 +13,7 @@ import { TodoService } from './services/todo.service';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { TodoFilterComponent } from './components/todo-filter/todo-filter.component';
 import { environment } from 'src/environments/environment';
+import { TodoState } from './state/todo.state';
 
 @NgModule({
   declarations: [AppComponent, TodoComponent, TodoListComponent, SpinnerComponent, TodoFilterComponent],
@@ -21,8 +22,8 @@ import { environment } from 'src/environments/environment';
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
-    NgxsModule.forRoot([], { developmentMode: !environment.production }),
-    NgxsReduxDevtoolsPluginModule.forRoot()
+    NgxsModule.forRoot([TodoState], { developmentMode: !environment.production }),
+    NgxsReduxDevtoolsPluginModule.forRoot({ disabled: environment.production })
   ],
   providers: [TodoService],
   bootstrap: [AppComponent]
