@@ -43,7 +43,14 @@ export class TodoState {
   @Action(TodoActions.Load)
   getTodoList(ctx: StateContext<TodoStateModel>, { params }: TodoActions.Load): Observable<TodoList> {
     ctx.patchState({ loading: true });
-    return this.todoService.getTodoList(params).pipe(tap(todoList => ctx.patchState({ todoList, loading: false })));
+    return this.todoService.getTodoList(params).pipe(
+      tap(todoList =>
+        ctx.patchState({
+          todoList,
+          loading: false
+        })
+      )
+    );
   }
 
   @Action(TodoActions.Add)
