@@ -11,7 +11,13 @@ export class TodoEffects {
     this.actions$.pipe(
       ofType(TodoActions.load),
       switchMap(({ params }) =>
-        this.todoService.getTodoList(params).pipe(map(todoList => TodoActions.loadSuccess({ todoList })))
+        this.todoService.getTodoList(params).pipe(
+          map(todoList =>
+            TodoActions.loadSuccess({
+              todoList
+            })
+          )
+        )
       )
     )
   );
@@ -20,7 +26,13 @@ export class TodoEffects {
     this.actions$.pipe(
       ofType(TodoActions.add),
       switchMap(({ todo }) =>
-        this.todoService.addTodo(todo).pipe(map(addedTodo => TodoActions.addSuccess({ todo: addedTodo })))
+        this.todoService.addTodo(todo).pipe(
+          map(addedTodo =>
+            TodoActions.addSuccess({
+              todo: addedTodo
+            })
+          )
+        )
       )
     )
   );
@@ -29,7 +41,13 @@ export class TodoEffects {
     this.actions$.pipe(
       ofType(TodoActions.remove),
       switchMap(({ todo }) =>
-        this.todoService.removeTodo(todo).pipe(map(() => TodoActions.removeSuccess({ id: todo.id })))
+        this.todoService.removeTodo(todo).pipe(
+          map(() =>
+            TodoActions.removeSuccess({
+              id: todo.id
+            })
+          )
+        )
       )
     )
   );
@@ -38,7 +56,16 @@ export class TodoEffects {
     this.actions$.pipe(
       ofType(TodoActions.update),
       switchMap(({ todo }) =>
-        this.todoService.updateTodo(todo).pipe(map(updatedTodo => TodoActions.updateSuccess({ todo: updatedTodo })))
+        this.todoService.updateTodo(todo).pipe(
+          map(updatedTodo =>
+            TodoActions.updateSuccess({
+              update: {
+                id: updatedTodo.id,
+                changes: updatedTodo
+              }
+            })
+          )
+        )
       )
     )
   );

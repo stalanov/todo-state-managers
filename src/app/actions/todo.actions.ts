@@ -1,3 +1,4 @@
+import { Update } from '@ngrx/entity';
 import { createAction, props } from '@ngrx/store';
 
 import { Todo, TodoList, TodoParams } from '../shared/types';
@@ -16,4 +17,4 @@ export const removeSuccess = createAction('[Todo] Remove Todo Success', props<{ 
 
 export const update = createAction('[Todo] Update Todo', props<{ todo: Todo }>());
 
-export const updateSuccess = createAction('[Todo] Update Todo Success', props<{ todo: Todo }>());
+export const updateSuccess = createAction('[Todo] Update Todo Success', props<{ update: Update<Todo> }>());

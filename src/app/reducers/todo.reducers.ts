@@ -1,21 +1,22 @@
+import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
 
 import * as TodoActions from '../actions/todo.actions';
-import { TodoList } from '../shared/types';
+import { Todo, TodoList } from '../shared/types';
 
 export const todoKey = 'todo';
 
-export interface TodoState {
-  todoList: TodoList;
+export interface TodoState extends EntityState<Todo> {
   loading: boolean;
   saving: boolean;
 }
 
-const initialTodoState: TodoState = {
-  todoList: [],
+export const adapter = createEntityAdapter<Todo>();
+
+const initialTodoState = adapter.getInitialState({
   loading: false,
   saving: false
-};
+});
 
 export const todoReducer = createReducer(
   initialTodoState,
@@ -25,49 +26,26 @@ export const todoReducer = createReducer(
     loading: true
   })),
 
-  on(TodoActions.loadSuccess, (state, { todoList }) => ({
-    ...state,
-    todoList,
-    loading: false
-  })),
+  on(TodoActions.loadSuccess, (state, { todoList }) => adapter.setAll(todoList, { ...state, loading: false })),
 
   on(TodoActions.add, state => ({
     ...state,
     saving: true
   })),
 
-  on(TodoActions.addSuccess, (state, { todo }) => ({
-    ...state,
-    todoList: [...state.todoList, todo],
-    saving: false
-  })),
+  on(TodoActions.addSuccess, (state, { todo }) => adapter.addOne(todo, { ...state, saving: false })),
 
   on(TodoActions.remove, state => ({
     ...state,
     saving: true
   })),
 
-  on(TodoActions.removeSuccess, (state, { id }) => ({
-    ...state,
-    todoList: state.todoList.filter(todo => todo.id !== id),
-    saving: false
-  })),
+  on(TodoActions.removeSuccess, (state, { id }) => adapter.removeOne(id, { ...state, saving: false })),
 
   on(TodoActions.update, state => ({
     ...state,
     saving: true
   })),
 
-  on(TodoActions.updateSuccess, (state, { todo }) => {
-    const todoList = state.todoList.reduce((list, item) => {
-      item.id === todo.id ? list.push(todo) : list.push(item);
-      return list;
-    }, [] as TodoList);
-
-    return {
-      ...state,
-      todoList,
-      saving: false
-    };
-  })
+  on(TodoActions.updateSuccess, (state, { update }) => adapter.updateOne(update, { ...state, saving: false }))
 );
