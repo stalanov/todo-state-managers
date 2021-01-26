@@ -23,6 +23,7 @@
     "@datorama/akita": "^6.0.0",
     "@datorama/akita-ngdevtools": "^6.0.0",
     "@ngrx/effects": "^10.1.2",
+    "@ngrx/entity": "^10.1.2",
     "@ngrx/store": "^10.1.2",
     "@ngrx/store-devtools": "^10.1.2",
     "@ngxs/devtools-plugin": "^3.7.1",
