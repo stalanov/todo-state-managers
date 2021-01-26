@@ -23,7 +23,7 @@ import { TodoState } from './state/todo.state';
     AppRoutingModule,
     FormsModule,
     NgxsModule.forRoot([TodoState], { developmentMode: !environment.production }),
-    NgxsReduxDevtoolsPluginModule.forRoot({ disabled: environment.production })
+    environment.plugins
   ],
   providers: [TodoService],
   bootstrap: [AppComponent]

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Action, Selector, State, StateContext } from '@ngxs/store';
+import { Action, Selector, State, StateContext, StateToken } from '@ngxs/store';
+import { patch, append, removeItem, updateItem } from '@ngxs/store/operators';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -13,8 +14,10 @@ export interface TodoStateModel {
   saving: boolean;
 }
 
-@State<TodoStateModel>({
-  name: 'todo',
+const TODO_STATE_TOKEN = new StateToken<TodoStateModel>('todo');
+
+@State({
+  name: TODO_STATE_TOKEN,
   defaults: {
     todoList: [],
     loading: false,
@@ -23,17 +26,17 @@ export interface TodoStateModel {
 })
 @Injectable()
 export class TodoState {
-  @Selector()
+  @Selector([TODO_STATE_TOKEN])
   static todoList(state: TodoStateModel): TodoList {
     return state.todoList;
   }
 
-  @Selector()
+  @Selector([TODO_STATE_TOKEN])
   static loading(state: TodoStateModel): boolean {
     return state.loading;
   }
 
-  @Selector()
+  @Selector([TODO_STATE_TOKEN])
   static saving(state: TodoStateModel): boolean {
     return state.saving;
   }
@@ -45,10 +48,12 @@ export class TodoState {
     ctx.patchState({ loading: true });
     return this.todoService.getTodoList(params).pipe(
       tap(todoList =>
-        ctx.patchState({
-          todoList,
-          loading: false
-        })
+        ctx.setState(
+          patch({
+            todoList,
+            loading: false
+          })
+        )
       )
     );
   }
@@ -57,13 +62,14 @@ export class TodoState {
   addTodo(ctx: StateContext<TodoStateModel>, { todo }: TodoActions.Add): Observable<Todo> {
     ctx.patchState({ saving: true });
     return this.todoService.addTodo(todo).pipe(
-      tap(newTodo => {
-        ctx.setState(state => ({
-          ...state,
-          todoList: [...state.todoList, newTodo],
-          saving: false
-        }));
-      })
+      tap(newTodo =>
+        ctx.setState(
+          patch({
+            todoList: append([newTodo]),
+            saving: false
+          })
+        )
+      )
     );
   }
 
@@ -71,13 +77,14 @@ export class TodoState {
   removeTodo(ctx: StateContext<TodoStateModel>, { todo }: TodoActions.Remove): Observable<{}> {
     ctx.patchState({ saving: true });
     return this.todoService.removeTodo(todo).pipe(
-      tap(() => {
-        ctx.setState(state => ({
-          ...state,
-          todoList: state.todoList.filter(item => item.id !== todo.id),
-          saving: false
-        }));
-      })
+      tap(() =>
+        ctx.setState(
+          patch({
+            todoList: removeItem<Todo>(item => item.id === todo.id),
+            saving: false
+          })
+        )
+      )
     );
   }
 
@@ -85,16 +92,14 @@ export class TodoState {
   updateTodo(ctx: StateContext<TodoStateModel>, { todo }: TodoActions.Update): Observable<Todo> {
     ctx.patchState({ saving: true });
     return this.todoService.updateTodo(todo).pipe(
-      tap(updatedTodo => {
-        ctx.setState(state => ({
-          ...state,
-          todoList: state.todoList.reduce((list, item) => {
-            item.id === updatedTodo.id ? list.push(updatedTodo) : list.push(item);
-            return list;
-          }, [] as TodoList),
-          saving: false
-        }));
-      })
+      tap(updatedTodo =>
+        ctx.setState(
+          patch({
+            todoList: updateItem<Todo>(item => item.id === updatedTodo.id, updatedTodo),
+            saving: false
+          })
+        )
+      )
     );
   }
 }
