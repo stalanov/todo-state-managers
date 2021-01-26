@@ -7,7 +7,7 @@ import { TodoService } from '../services/todo.service';
 
 @Injectable()
 export class TodoEffects {
-  loadTodoList = createEffect(() =>
+  loadTodoList$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TodoActions.load),
       switchMap(({ params }) =>
@@ -16,7 +16,7 @@ export class TodoEffects {
     )
   );
 
-  addTodo = createEffect(() =>
+  addTodo$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TodoActions.add),
       switchMap(({ todo }) =>
@@ -25,7 +25,7 @@ export class TodoEffects {
     )
   );
 
-  removeTodo = createEffect(() =>
+  removeTodo$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TodoActions.remove),
       switchMap(({ todo }) =>
@@ -34,7 +34,7 @@ export class TodoEffects {
     )
   );
 
-  updateTodo = createEffect(() =>
+  updateTodo$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TodoActions.update),
       switchMap(({ todo }) =>
