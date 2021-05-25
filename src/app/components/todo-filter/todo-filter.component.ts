@@ -9,8 +9,7 @@ const filterHash = {
 
 @Component({
   selector: 'app-todo-filter',
-  templateUrl: './todo-filter.component.html',
-  styleUrls: ['./todo-filter.component.scss']
+  templateUrl: './todo-filter.component.html'
 })
 export class TodoFilterComponent {
   @Output() filterChange: EventEmitter<Partial<TodoParams>> = new EventEmitter();
