@@ -19,3 +19,4 @@ dist/
 node_modules/
 reports/
 .prettierignore
+package-lock.json
