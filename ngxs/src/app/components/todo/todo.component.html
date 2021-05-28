@@ -1,0 +1,11 @@
+<div class="todo">
+  <input
+    type="checkbox"
+    [id]="todo.id"
+    [checked]="todo.completed"
+    [disabled]="disabled"
+    (change)="onChange($event.currentTarget.checked)"
+  />
+  <label [for]="todo.id">{{ todo.title }}</label>
+  <button type="button" class="todo__remove-button" [disabled]="disabled" (click)="removeTodo.emit(todo)">×</button>
+</div>

@@ -1,0 +1,8 @@
+<div class="todo-filter">
+  <label for="filter">Choose todos: </label>
+  <select id="filter" (change)="onChange($event.target.value)">
+    <option [value]="completeFilter.ALL">All</option>
+    <option [value]="completeFilter.COMPLETED">Complete</option>
+    <option [value]="completeFilter.NON_COMPLETED">Incomplete</option>
+  </select>
+</div>
