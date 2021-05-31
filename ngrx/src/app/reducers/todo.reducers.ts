@@ -2,7 +2,7 @@ import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
 
 import * as TodoActions from '../actions/todo.actions';
-import { Todo, TodoList } from '../shared/types';
+import { Todo } from '../shared/types';
 
 export const todoKey = 'todo';
 
