@@ -10,7 +10,7 @@ import { TodoService, TodoQuery } from 'src/app/state';
   styleUrls: ['./todo-list.component.scss']
 })
 export class TodoListComponent implements OnInit {
-  todoList$: Observable<TodoList> = this.todoQuery.todoList;
+  todoList$: Observable<TodoList> = this.todoQuery.todoList$;
   newTodoInput = '';
   isSaving$: Observable<boolean> = this.todoQuery.selectSaving();
   isLoading$: Observable<boolean> = this.todoQuery.selectLoading();

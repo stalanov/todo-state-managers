@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class TodoQuery extends QueryEntity<TodoState> {
-  todoList: Observable<TodoList> = this.selectAll();
+  todoList$: Observable<TodoList> = this.selectAll();
 
   constructor(protected store: TodoStore) {
     super(store);
